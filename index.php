@@ -23,12 +23,16 @@ $fixedContent = preg_replace_callback('@<div class="code panel" style="border-wi
 $fixedContent = trim($fixedContent);
 
 function getWikiContent($content) {
+	// Start after the wiki content comment
 	$from = "<!-- wiki content -->";
 	$fromOffset = strlen($from);
-	$to = "<rdf:";
-	$toOffset = -10;
 	$start = strpos($content, $from) + $fromOffset;
-	$end = strpos($content, $to) + $toOffset;
+	
+	// End just before the final </div> before the <rdf> tag
+	$rdf = "<rdf:";
+	$rdfPos = strpos($content, $rdf);
+	$end = strrpos($content, '</div>', $rdfPos - strlen($content));
+	
 	return substr($content, $start, $end - $start);
 }
 
